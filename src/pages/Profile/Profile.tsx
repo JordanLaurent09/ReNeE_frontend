@@ -4,18 +4,11 @@ import { GenreSelector } from "@/components/GenreSelector";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label"
+import type { Performer } from "@/types/Performer";
 import axios from "axios";
-import { useEffect, useState, type ChangeEvent } from "react";
+import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
-
-type Performer = {
-        id: number,
-        name: string,
-        genre: string,
-        country: string,
-        image: string
-    }
+import Cookies from 'js-cookie';
 
 function Profile() {
 
@@ -54,10 +47,6 @@ function Profile() {
 
     const [display, setDisplay] = useState('hidden');
 
-    // Для файла специальное хранилище
-    const [file, setFile] = useState({
-        file: ''
-    });
     const [fileContent, setFileContent] = useState<string | null>(null);
 
     const [formData, setFormData] = useState({    
@@ -66,6 +55,8 @@ function Profile() {
         country: '',
         image: '',             
     });
+
+    const [jwt, setJwt] = useState<string | undefined>(undefined);
     
     const handleCountrySelect = (event: string) => {     
         setFormData({
@@ -109,19 +100,16 @@ function Profile() {
             console.log(fileContent);
             console.log(formData);
         }
-        /* const {name, value} = event.target;
-        setFile({
-            ...file,
-            [name]: value
-        })
-        console.log(value);
-        console.log(file); */
     }
 
-    const handleClick = async (event) => {
+    const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
         try {
-            await axios.get(`http://localhost:3010/performers/name/${findPerformerValue.name}`)
+            await axios.get(`http://localhost:3010/performers/name/${findPerformerValue.name}`, {
+                headers: {
+                    "Authorization": `Bearer ${jwt}`
+                }
+            })
             .then(response => {
                 setSeekPerformer(response.data);
                 setDisplay('flex');                     
@@ -129,7 +117,7 @@ function Profile() {
             .catch(error => console.log(error))
         }
         catch (error) {
-            setError(error);
+            console.log(error);
         }
     }
 
@@ -139,12 +127,14 @@ function Profile() {
             const res = await axios.post('http://localhost:3010/users/performer', { 
                 userId: Number(userId), 
                 performerId: seekPerformer.id 
-            })
+            }, {headers: {"Authorization": `Bearer ${jwt}`}})
             console.log(res);
+            //const newPerformer = res.data;
+            //setPerformersData([...performersData, newPerformer])
         } 
     }
 
-    const handleChange = (event) => {
+    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = event.target;
         setFindPerformerData({
             ...findPerformerValue,
@@ -152,12 +142,26 @@ function Profile() {
         })
     }
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try {
             const res = await axios.post('http://localhost:3010/performers/add', formData);
             console.log(res);
         } catch(error) {
+            console.log(error);
+        }
+    }
+
+    const handleRemovePerformer = async (event) => {
+        const performerId: number = event.target.value;
+        const performer: Performer | undefined = performersData.find(performer => performer.id == performerId);
+        try {
+            const res = await axios.delete(`http://localhost:3010/users/deletePerformer?userId=${userId}&performerId=${performerId}`);
+            console.log(res.data);
+            setPerformersData(performersData.filter((value) => {
+                return value != performer;
+            }));
+        } catch (error) {
             console.log(error);
         }
     }
@@ -174,13 +178,16 @@ function Profile() {
                 })
                 .catch(error => {console.log(error)})                                     
             } catch (error){
-                setError(error);
+                console.log(error);
             }
         };
         performersIndexes();
     }, [userId]);
 
-    
+    useEffect(() => {
+        const jwt = Cookies.get('Renee');
+        setJwt(jwt);
+    }, [])
 
     return (       
         <div className="m-[auto] w-[80%] h-[60em] flex flex-col bg-[url(/NeonCar.jpg)] bg-size-[cover] bg-no-repeat brightness-90">
@@ -243,12 +250,13 @@ function Profile() {
             
             <div className="m-[auto] mt-20 w-[80%] flex justify-between gap-2 rounded-md bg-fuchsia-400 brightness-80">
                 {performersData !== undefined && performersData.map(performersData => (
-                    <div className="m-[auto] mt-4 mb-4 w-[25%] flex flex-col justify-between items-center text-white" key={performersData.id}>
+                    <div className="relative m-[auto] mt-4 mb-4 w-[25%] flex flex-col justify-between items-center text-white" key={performersData.id}>
                         <img className="w-[100%] h-[90%] rounded-md" src={textToImageConvert(performersData.image)} alt={performersData.image}/>
+                        <Button value={performersData.id} onClick={handleRemovePerformer} className="absolute right-0">X</Button>
                         <div className="m-[auto] mt-4 mb-4 w-[100%] flex flex justify-between items-center">
                             <p>{performersData.name}</p>                       
-                            <img className="w-[10%]" src={performersData.country} alt="" />
-                        </div>
+                            <img className="w-[10%]" src={performersData.country} alt="" />                           
+                        </div>                      
                         <Button className="w-[100%] mb-2" onClick={() => navigate(`/profile/${userId}/${performersData.id}`)} variant="toxic_pink" size={'default'}>Open Hall of Fame</Button>                       
                     </div>
                     )) 
