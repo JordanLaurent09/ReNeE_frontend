@@ -18,6 +18,7 @@ import { useState, type ChangeEvent, type FormEvent } from "react"
 import type { JSX } from "react"
 import type { LoginFormProps } from "@/types/LoginFormProps"
 
+import Cookies from 'js-cookie';
 
 
 export function LoginForm(props: LoginFormProps): JSX.Element {
@@ -43,6 +44,7 @@ export function LoginForm(props: LoginFormProps): JSX.Element {
       const res = await axios.post('http://localhost:3010/auth/login', formData);
       console.log(res.data);
       if (res.data != '') {
+        Cookies.set('Renee', res.data.accessToken, {expires: 7})
         props.goToProfile(res.data.id);
       }
     } catch (error) {
