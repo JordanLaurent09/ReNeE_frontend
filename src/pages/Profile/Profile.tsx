@@ -10,9 +10,7 @@ import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Cookies from 'js-cookie';
 
-function Profile() {
-
-    function textToImageConvert(text: string): string {
+function textToImageConvert(text: string): string {
         const textData = text.split(',')[1];
 
         const byteCharacters = atob(textData);
@@ -31,6 +29,10 @@ function Profile() {
 
         return imageUrl;
     }
+
+function Profile() {
+
+    
     
     const { userId } = useParams();
 
@@ -124,13 +126,16 @@ function Profile() {
     const handleAddToFavorites = async () => {
         if (seekPerformer) {
             console.log(seekPerformer.id, Number(userId))
-            const res = await axios.post('http://localhost:3010/users/performer', { 
+            const response = await axios.post('http://localhost:3010/auth/addPerformer', { 
                 userId: Number(userId), 
                 performerId: seekPerformer.id 
             }, {headers: {"Authorization": `Bearer ${jwt}`}})
-            console.log(res);
-            //const newPerformer = res.data;
-            //setPerformersData([...performersData, newPerformer])
+           
+            const res = await axios.get(`http://localhost:3010/performers/id/${seekPerformer.id}`);
+            console.log(res.data);
+            setPerformersData([...performersData, res.data]);
+            setDisplay('hidden');
+            setFindPerformerData({name: ''});            
         } 
     }
 
@@ -156,7 +161,7 @@ function Profile() {
         const performerId: number = event.target.value;
         const performer: Performer | undefined = performersData.find(performer => performer.id == performerId);
         try {
-            const res = await axios.delete(`http://localhost:3010/users/deletePerformer?userId=${userId}&performerId=${performerId}`);
+            const res = await axios.delete(`http://localhost:3010/auth/deletePerformer?userId=${userId}&performerId=${performerId}`, {headers: {"Authorization": `Bearer ${jwt}`}});
             console.log(res.data);
             setPerformersData(performersData.filter((value) => {
                 return value != performer;
@@ -166,12 +171,15 @@ function Profile() {
         }
     }
 
+
     useEffect(() => {
         const performersIndexes = async () => {
             try {
-                await axios.get(`http://localhost:3010/users/performers/${userId}`)
+                const jwt = Cookies.get('Renee');
+                setJwt(jwt);
+                await axios.get(`http://localhost:3010/auth/performers/${userId}`, {headers:  {"Authorization": `Bearer ${jwt}`}})
                 .then(response => {
-                    
+                    console.log(response.status);
                     axios.get(`http://localhost:3010/performers/favorites/${JSON.stringify(response.data)}`)
                     .then(response => {setPerformersData(response.data)})
                     .catch(error => {console.log(error)})
@@ -184,17 +192,11 @@ function Profile() {
         performersIndexes();
     }, [userId]);
 
-    useEffect(() => {
-        const jwt = Cookies.get('Renee');
-        setJwt(jwt);
-    }, [])
-
     return (       
         <div className="m-[auto] w-[80%] h-[60em] flex flex-col bg-[url(/NeonCar.jpg)] bg-size-[cover] bg-no-repeat brightness-90">
             <div className="m-[auto] mt-4 mb-4 w-[90%] h-[5em] relative flex justify-between items-center bg-[#6d0089] rounded-md opacity-50">                
-                <img className="ml-4 w-[150px]" src="/ReneeLogo.png" alt="site logo"/>                                                             
-            </div>
-            
+                <img className="ml-4 w-[150px]" src="/ReneeLogo.png" alt="site logo"/>                                                                            
+            </div>         
             <div className="absolute top-[4%] right-[-3.5%] w-[40%] flex gap-4">
                 <div className="w-[60%] flex gap-4">
                     <Input className="w-[60%] text-white"
@@ -215,7 +217,7 @@ function Profile() {
                             {seekPerformer?.name === undefined && <p>Nothing found</p>}
                             <Button onClick={() => {console.log("Neon");setDisplay('hidden')}} className="mr-1 w-[20%]">Close</Button>
                         </div>
-                    <Button onClick={handleClick} className="w-[30%]">Find singer</Button>
+                    <Button onClick={handleClick} className="w-[30%]">Поиск</Button>
                 </div>               
                 <AccountForm/>
             </div>
@@ -247,9 +249,9 @@ function Profile() {
                 </div>                   
             </form>            
             
-            
-            <div className="m-[auto] mt-20 w-[80%] flex justify-between gap-2 rounded-md bg-fuchsia-400 brightness-80">
-                {performersData !== undefined && performersData.map(performersData => (
+            {performersData[0] == undefined && <h1 className="m-[auto] w-[80%] text-8xl text-white">У Вас пока нет любимых исполнителей</h1>} 
+            <div className="m-[auto] mt-20 w-[80%] flex flex-wrap gap-2 overflow-y-scroll rounded-md bg-fuchsia-400 brightness-80">
+                {performersData != undefined && performersData.map(performersData => (
                     <div className="relative m-[auto] mt-4 mb-4 w-[25%] flex flex-col justify-between items-center text-white" key={performersData.id}>
                         <img className="w-[100%] h-[90%] rounded-md" src={textToImageConvert(performersData.image)} alt={performersData.image}/>
                         <Button value={performersData.id} onClick={handleRemovePerformer} className="absolute right-0">X</Button>
@@ -261,12 +263,9 @@ function Profile() {
                     </div>
                     )) 
                 }
-                {performersData[0] == undefined && <h1 className="text-8xl text-white">А Я ДЕВОЧКА С ПЛЕЕРОМ, С ВЕЕРОМ ВЕЧЕРОМ НЕ ХОДИ!!!</h1>}
-            </div>   
-
-            
                 
-            
+            </div>
+                   
         </div>                       
     )
 }
