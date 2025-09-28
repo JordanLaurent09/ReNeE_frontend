@@ -6,6 +6,7 @@ import type { Photo } from "@/types/Photo";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import Cookies from 'js-cookie';
 
 function textToImageConvert(text: string): string {
     const textData = text.split(',')[1];
@@ -50,10 +51,14 @@ function HallOfFame() {
     const [isAddAlbumFormVisible, setIsAddAlbumFormVisible] = useState(false);
     const [isAlbumsListVisible, setIsAlbumListVisible] = useState(false);
 
+    const [jwt, setJwt] = useState<string | undefined>(undefined);
+
     useEffect(() => {
         const photoArray = async () => {
             try {
-                await axios.get(`http://localhost:3010/users/photos?userId=${userId}&performerId=${performerId}`)
+                const jwt = Cookies.get('Renee');
+                setJwt(jwt);
+                await axios.get(`http://localhost:3010/auth/photos?userId=${userId}&performerId=${performerId}`, {headers: {"Authorization": `Bearer ${jwt}`}})
                 .then(response => {
                     setPhotos(response.data);                                   
                 })
@@ -68,7 +73,7 @@ function HallOfFame() {
     useEffect(() => {
         const albumsIndexes = async () => {
             try {
-                await axios.get(`http://localhost:3010/users/albums?userId=${userId}&performerId=${performerId}`)
+                await axios.get(`http://localhost:3010/auth/albums?userId=${userId}&performerId=${performerId}`, {headers: {"Authorization": `Bearer ${jwt}`}})
                 .then(response => {
                     axios.get(`http://localhost:3010/albums/favorites/${JSON.stringify(response.data)}`)
                     .then(response => {setUserAlbums(response.data)})
@@ -80,7 +85,7 @@ function HallOfFame() {
             }
         };
         albumsIndexes();
-    }, [userId, performerId]);
+    }, [userId, performerId, jwt]);
 
 
     const handleFile = (event) => {
@@ -120,12 +125,12 @@ function HallOfFame() {
         event.preventDefault();
 
         try {
-            const res = await axios.post('http://localhost:3010/users/newPhoto', 
+            const res = await axios.post('http://localhost:3010/auth/addPhoto', 
                 {
                     performerId: performerId,
                     userId: userId,
                     image: fileContent
-                }
+                }, {headers: {"Authorization": `Bearer ${jwt}`}}
             );
             console.log(res);
         } catch (error) {
@@ -137,7 +142,7 @@ function HallOfFame() {
         const photoId: number = event.target.value;  
         const photo: Photo | undefined = photos.find(value => value.id == photoId);
         try {
-            const res = await axios.delete(`http://localhost:3010/users/deletePhoto/${photoId}`);
+            const res = await axios.delete(`http://localhost:3010/auth/deletePhoto/${photoId}`, {headers: {"Authorization": `Bearer ${jwt}`}});
             console.log(res.data);
             setPhotos(photos.filter((value) => {
                 return value != photo
@@ -160,11 +165,11 @@ function HallOfFame() {
         const choseAlbumId: number = event.target.value;
 
         try {
-            const res = await axios.post('http://localhost:3010/users/newAlbum', {
+            const res = await axios.post('http://localhost:3010/auth/addAlbum', {
                 albumid: choseAlbumId,
                 userid: userId,
                 performerid: performerId
-            });
+            }, {headers: {"Authorization": `Bearer ${jwt}`}});
             console.log(res.data);
         } catch (error) {
             console.log(error);
@@ -177,7 +182,7 @@ function HallOfFame() {
         const album: Album | undefined = userAlbums.find(album => album.id == albumId);
 
         try {
-            const res = await axios.delete(`http://localhost:3010/users/deleteAlbum/${albumId}`);
+            const res = await axios.delete(`http://localhost:3010/auth/deleteAlbum?albumId=${albumId}&userId=${userId}`, {headers: {"Authorization": `Bearer ${jwt}`}});
             console.log(res.data);
             setUserAlbums(userAlbums.filter((value) => {
                 return value != album;
