@@ -42,9 +42,9 @@ export function LoginForm(props: LoginFormProps): JSX.Element {
     console.log(formData);
     try {
       const res = await axios.post('http://localhost:3010/auth/login', formData);
-      console.log(res.data);
+      console.log(res.data.id);
       if (res.data != '') {
-        Cookies.set('Renee', res.data.accessToken, {expires: 7})
+        Cookies.set('Renee', res.data.accessToken);
         props.goToProfile(res.data.id);
       }
     } catch (error) {
