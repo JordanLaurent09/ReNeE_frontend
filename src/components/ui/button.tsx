@@ -21,11 +21,13 @@ const buttonVariants = cva(
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
 
-        acid_green: "bg-[#48fb2c]",
-        acid_cyan: "bg-[#0adada]",
-        toxic_pink: "bg-[#3d3c7a]",
-        jamaica_blue: "bg-[#299bb3]",
-        barbie_pink: "bg-[#f698c5] text-[#01528f]"
+        acid_green: "bg-[#48fb2c] cursor-pointer",
+        acid_cyan: "bg-[#0adada] cursor-pointer",
+        toxic_pink: "bg-[#3d3c7a] cursor-pointer",
+        jamaica_blue: "bg-[#299bb3] cursor-pointer",
+        barbie_pink: "bg-[#f698c5] text-[#01528f] cursor-pointer",
+        crazy_neon: "bg-[#9d1363] text-[#fe6d5a] cursor-pointer hover:bg-[#fe6d5a] hover:text-[#9d1363]",
+        blue_deep: "bg-[#01528f] cursor-pointer"      
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
