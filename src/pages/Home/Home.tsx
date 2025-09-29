@@ -29,23 +29,23 @@ function Home() {
                     <Title/>
                     <MainDevise>
                         <Description/>
-                        <Button variant={'acid_cyan'} size={'lg'} onClick={goToRegister}>Start gone mad now</Button>              
+                        <Button variant={'acid_cyan'} size={'lg'} onClick={goToRegister}>Начните сходить с ума</Button>              
                     </MainDevise>
                     </MainDeviseRegisterContainer>                
                 <Offer/>
                 {/* Это будет отдельный компонент */}
                 <div className="w-[100%] flex items-center justify-between">
-                    <p className="relative w-[25%] text-white text-center text-4xl">Create ur OWN HALL OF FAME with favorite singers&bands</p>
+                    <p className="relative w-[25%] text-white text-center text-4xl">Создайте свой собственный ЗАЛ СЛАВЫ с любимыми исполнителями</p>
                     <GalleryHomeContainer gallery={singers}/>   
                 </div>
                 <div className="mt-20 w-[100%] flex items-center justify-between">
                     <Picture image="Scandal.jpg"/>
                     <Picture image="Singer.jpg"/>
-                    <p className="relative w-[25%] text-white text-center text-4xl">Add scandal photos, faces and poses:))</p>                       
+                    <p className="relative w-[25%] text-white text-center text-4xl">Добавляйте скандальные фото!))</p>                       
                 </div>
 
                 <div className="m-[auto] w-[100%] h-[100%] mt-20 flex items-center justify-evenly">
-                    <p className="relative w-[25%] text-white text-center text-4xl">Store all ur favorites songs FOREVER</p> 
+                    <p className="relative w-[25%] text-white text-center text-4xl">Храните свои любимые музыкальные альбомы</p> 
                     <Picture image="NeonPlayer1.jpg"/>                           
                 </div>               
 

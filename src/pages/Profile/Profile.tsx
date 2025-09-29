@@ -49,6 +49,8 @@ function Profile() {
 
     const [display, setDisplay] = useState('hidden');
 
+    const [createPerformerFormState, setCreatePerformerFormState] = useState('hidden');
+
     const [fileContent, setFileContent] = useState<string | null>(null);
 
     const [formData, setFormData] = useState({    
@@ -139,6 +141,20 @@ function Profile() {
         } 
     }
 
+    const openCreatePerformer = () => {
+        setCreatePerformerFormState('flex');
+    }
+
+
+    const openUpdateData = async () => {
+
+    }
+
+    const logOut = () => {
+        Cookies.remove('Renee');
+        navigate('/');
+    }
+
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = event.target;
         setFindPerformerData({
@@ -152,6 +168,7 @@ function Profile() {
         try {
             const res = await axios.post('http://localhost:3010/performers/add', formData);
             console.log(res);
+            setCreatePerformerFormState('hidden');
         } catch(error) {
             console.log(error);
         }
@@ -215,15 +232,15 @@ function Profile() {
                                 
                             </div>}                   
                             {seekPerformer?.name === undefined && <p>Nothing found</p>}
-                            <Button onClick={() => {console.log("Neon");setDisplay('hidden')}} className="mr-1 w-[20%]">Close</Button>
+                            <Button onClick={() => {setDisplay('hidden')}} className="mr-1 w-[20%]">Close</Button>
                         </div>
                     <Button onClick={handleClick} className="w-[30%]">Поиск</Button>
                 </div>               
-                <AccountForm/>
+                <AccountForm openUpdateData={openUpdateData} openCreatePerformer={openCreatePerformer} logOut={logOut}/>
             </div>
 
             
-            <form onSubmit={handleSubmit} className="absolute w-[20%] top-[30%] left-[40%] bg-[black] hidden rounded-md text-orange-500 z-1" encType="multipart/form-data">
+            <form onSubmit={handleSubmit} className={`absolute w-[20%] top-[30%] left-[40%] bg-[black] ${createPerformerFormState} rounded-md text-orange-500 z-1`} encType="multipart/form-data">
                 <div className="flex flex-col items-center gap-6">
                     <div className="grid gap-2">
                         <label htmlFor="">Enter performer name</label>
