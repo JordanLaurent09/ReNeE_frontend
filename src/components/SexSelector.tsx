@@ -13,14 +13,14 @@ import type { JSX } from "react"
 export function SexSelector(props: SexSelectorProps): JSX.Element {
   return (
     <Select onValueChange={props.handleSelect} required>
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Select a gender"/>
+      <SelectTrigger className="w-[180px] border-[#f698c5]">
+        <SelectValue placeholder="Выберите пол"/>
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="bg-[#01528f]">
         <SelectGroup>
-          <SelectLabel>Gender</SelectLabel>
-          <SelectItem value="MALE">Male</SelectItem>
-          <SelectItem value="FEMALE">Female</SelectItem>    
+          <SelectLabel>Пол</SelectLabel>
+          <SelectItem value="MALE">Мужской</SelectItem>
+          <SelectItem value="FEMALE">Женский</SelectItem>    
         </SelectGroup>
       </SelectContent>
     </Select>

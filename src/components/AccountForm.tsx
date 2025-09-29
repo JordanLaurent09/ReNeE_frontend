@@ -9,9 +9,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import type { AccountFormProps } from "@/types/AccountFormProps";
 
 
-export function AccountForm() {
+export function AccountForm(props: AccountFormProps) {
     return (
         <AccountContainer>
             <DropdownMenu>
@@ -21,17 +22,17 @@ export function AccountForm() {
       <DropdownMenuContent className="w-56" align="end">
         <DropdownMenuLabel>Профиль</DropdownMenuLabel>
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={props.openUpdateData}>
             Личные данные
           </DropdownMenuItem>         
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>Создать нового исполнителя</DropdownMenuItem>         
+          <DropdownMenuItem onClick={props.openCreatePerformer}>Создать нового исполнителя</DropdownMenuItem>         
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
                
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={props.logOut}>
           Выйти        
         </DropdownMenuItem>
       </DropdownMenuContent>

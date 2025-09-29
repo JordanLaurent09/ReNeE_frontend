@@ -5,7 +5,7 @@ export function Footer() {
                 <img className="w-[150px]" src="ReneeLogo.png" alt="site logo"/>
                 <div className="w-[100%] pt-15 flex items-center">
                     <img className="w-10" src="Lightning.png" alt="" />
-                    <p className="text-white">Electrical storm is coming!</p>
+                    <p className="text-white">Приближается гроза!</p>
                 </div>
                 <div className="pt-4 flex flex-col text-white">
                     <p>Made by Serge Choirot & Eros Valentini</p>
@@ -14,13 +14,13 @@ export function Footer() {
             </div>
             <div className="w-[70%] flex justify-between text-white">
                 <div className="flex flex-col">
-                    Company
+                    О нас
                 </div>
                 <div className="flex flex-col">
-                    Contacts
+                    Контакты
                 </div>
                 <div className="flex flex-col">
-                    We are in social networks
+                    Мы в социальных сетях
                 </div>
             </div>
         </div>

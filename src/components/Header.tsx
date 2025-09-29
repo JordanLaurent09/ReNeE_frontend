@@ -18,8 +18,8 @@ function Header() {
                 <img className="w-[150px]" src="ReneeLogo.png" alt="site logo"/>
             </div>          
             <div className="pr-2 w-[200px] flex justify-between text-black items-center">
-                <Button onClick={goToLogin} variant='acid_green' size={'default'}>Log In</Button>
-                <Button onClick={goToRegister} variant='acid_cyan' size={'default'}>Sign Up</Button>
+                <Button onClick={goToLogin} variant='acid_green' size={'default'}>Войти</Button>
+                <Button onClick={goToRegister} variant='acid_cyan' size={'default'}>Регистрация</Button>
             </div>
         </div>
     );
