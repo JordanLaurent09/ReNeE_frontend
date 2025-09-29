@@ -5,7 +5,7 @@ import type { Album } from "@/types/Album";
 import type { Photo } from "@/types/Photo";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Cookies from 'js-cookie';
 
 function textToImageConvert(text: string): string {
@@ -33,7 +33,7 @@ function textToImageConvert(text: string): string {
 
 function HallOfFame() {
     const { userId, performerId } = useParams();
-
+    const navigate = useNavigate();
 
     const [photos, setPhotos] = useState<Photo[]>([]);
     const [userAlbums, setUserAlbums] = useState<Album[]>([]);
@@ -88,6 +88,14 @@ function HallOfFame() {
     }, [userId, performerId, jwt]);
 
 
+
+    const handleBackToProfile = () => {
+        if (jwt) {
+            navigate(`/profile/${userId}`);
+        }
+        else navigate('/');
+    }
+
     const handleFile = (event) => {
         const file = event.target.files[0];
         console.log(file);
@@ -133,6 +141,11 @@ function HallOfFame() {
                 }, {headers: {"Authorization": `Bearer ${jwt}`}}
             );
             console.log(res);
+            await axios.get(`http://localhost:3010/auth/photos?userId=${userId}&performerId=${performerId}`, {headers: {"Authorization": `Bearer ${jwt}`}})
+                .then(response => {
+                setPhotos(response.data);                                   
+            })
+            setIsAddPhotoFormVisible(false);
         } catch (error) {
             console.log(error);
         }
@@ -171,10 +184,23 @@ function HallOfFame() {
                 performerid: performerId
             }, {headers: {"Authorization": `Bearer ${jwt}`}});
             console.log(res.data);
+
         } catch (error) {
             console.log(error);
         }
         console.log(choseAlbumId);
+
+        try {
+                await axios.get(`http://localhost:3010/auth/albums?userId=${userId}&performerId=${performerId}`, {headers: {"Authorization": `Bearer ${jwt}`}})
+                .then(response => {
+                    axios.get(`http://localhost:3010/albums/favorites/${JSON.stringify(response.data)}`)
+                    .then(response => {setUserAlbums(response.data)})
+                    .catch(error => {console.log(error)})
+                })
+                .catch(error => {console.log(error)})
+            } catch(error) {
+                console.log(error);
+            }
     }
 
     const handleRemoveAlbum = async (event) => {
@@ -235,47 +261,64 @@ function HallOfFame() {
 
 
     return (
-        <div className="m-[auto] w-[100%] flex flex-col items-center text-white">
-            <h1 className="mt-10 text-4xl">HALL OF FAME</h1>
-            <div className="m-[auto] mt-8 mb-8 w-[90%] flex flex-col items-center">               
-                <div className="w-[100%] flex justify-between">
-                    <div className="w-[5%] h-[650px] mt-6 mr-12 flex flex-col justify-between items-center gap-6">
-                        <p className="text-7xl">P</p>
-                        <p className="text-7xl">H</p>
-                        <p className="text-7xl">O</p>
-                        <p className="text-7xl">T</p>
-                        <p className="text-7xl">O</p>
-                        <p className="text-7xl">S</p>
-                    </div>
-                    <div className="m-[auto] h-[650px] mt-8 mb-8 w-[90%] flex flex-wrap gap-6 overflow-y-scroll">
-                    {photos.length > 0 && photos.map((photo, index) => 
-                      <div key={index} className="w-[20%] relative rounded-md">
-                        <img className="w-[100%] h-[auto] aspect-7/9 rounded-md" src={textToImageConvert(photo.image)} alt="Это фото"/>
-                        <Button value={photo.id} onClick={handleRemovePhoto} variant={'ghost'} className="absolute top-0 right-0">X</Button>
-                      </div>
-                      
-                   )}
+        <div className="m-[auto] w-[100%] flex flex-col items-center text-white bg-[url(/BlueNeonUpstairs.jpg)] bg-size-[cover] bg-no-repeat">
 
-                    {photos.length === 0 && <div className="m-[auto] text-4xl text-center items-center">You don't have favorite photos yet</div>}
-                    </div>
+            <div className="m-[auto] mt-12 mb-12 w-[90%] flex flex-col items-center bg-black">
+                <div className="m-[auto] mt-10 w-[90%] flex justify-between items-center">
+                    <img className="w-[150px]" src="/ReneeLogo.png" alt="Renee logo"/>
+                    <Button onClick={handleBackToProfile} variant={'blue_deep'}>Назад</Button>
                 </div>
+                <h1 className="mt-6 text-6xl text-[#0adada]">ЗАЛ СЛАВЫ</h1>
+                
+                <div className="m-[auto] mt-8 mb-8 w-[90%] flex flex-col items-center">               
+                    <div className="w-[100%] flex justify-between">
+                        <div className="w-[5%] h-[650px] mt-6 mr-12 flex flex-col justify-between items-center gap-6 text-[#0adada]">
+                            <p className="text-7xl">P</p>
+                            <p className="text-7xl">H</p>
+                            <p className="text-7xl">O</p>
+                            <p className="text-7xl">T</p>
+                            <p className="text-7xl">O</p>
+                            <p className="text-7xl">S</p>
+                        </div>
+                        <div className="m-[auto] h-[650px] mt-8 mb-8 w-[90%] flex flex-wrap gap-6">
+                        {photos.length > 0 && photos.map((photo, index) => 
+                        <div key={index} className="w-[20%] relative rounded-md">
+                            <img className="w-[100%] h-[auto] aspect-7/9 rounded-md" src={textToImageConvert(photo.image)} alt="Это фото"/>
+                            <Button value={photo.id} onClick={handleRemovePhoto} variant={'ghost'} className="absolute top-0 right-0">X</Button>
+                        </div>                     
+                        )}
+
+                        {photos.length === 0 && <div className="m-[auto] text-4xl text-[#01528f] text-center items-center">Избранные фотографии отсутствуют</div>}
+                        </div>
+                    </div>
                 
 
-                <Button className="mt-20 w-[300px] h-[50px] text-xl" onClick={handleVisiblePhotoForm}>Add new photo</Button>
+                <Button variant={'blue_deep'} className="mt-20 w-[300px] h-[50px] text-xl" onClick={handleVisiblePhotoForm}>Добавить фото</Button>
 
                 {
                 isAddPhotoFormVisible && 
-                <form onSubmit={handlePhotoSubmit} className="absolute top-[50%] w-64 h-32 flex flex-col justify-evenly items-center bg-white border text-black" encType="multipart/form-data">                   
-                    <Input type="file" name="file" id="file" onChange={handleFile}/>
-                    <Button className="w-[60%]" type="submit">Add photo</Button>
+                <form onSubmit={handlePhotoSubmit} className="absolute top-[40%] w-[20%] flex flex-col justify-evenly items-center bg-[#01528f] rounded-md text-[black]" encType="multipart/form-data">                   
+                    <div className="m-[auto] relative mt-4 mb-4 flex flex-col justify-between items-center gap-6">
+                        <Label className="text-lg">Добавление фотографии</Label>
+                        <Input className="border-black" type="file" name="file" id="file" onChange={handleFile} required/>
+                        <Button variant={'acid_cyan'} className="w-[60%]" type="submit">Добавить</Button>
+                    </div>
+                    <button onClick={() => {setIsAddPhotoFormVisible(false)}} className="absolute top-2 right-3 cursor-pointer text-[black]">X</button>
                 </form>
                 }  
             </div>
 
-            <div className="m-[auto] mt-8 mb-8 w-[90%] flex flex-col items-center">
-                <h2>Albums</h2>
+            <div className="m-[auto] w-[80%] relative mt-20 mb-8 w-[90%] flex flex-col items-center">
+                <div className="w-[60%] flex justify-between gap-6 text-[#0adada]">
+                    <p className="text-7xl">A</p>
+                    <p className="text-7xl">L</p>
+                    <p className="text-7xl">B</p>
+                    <p className="text-7xl">U</p>
+                    <p className="text-7xl">M</p>
+                    <p className="text-7xl">S</p>
+                </div>
 
-                <div className="m-[auto] mt-8 mb-8 w-[90%] flex flex-wrap justify-between items-center">
+                <div className="m-[auto] mt-40 mb-8 w-[90%] flex flex-wrap justify-between items-center">
                     {userAlbums !== undefined && userAlbums.map(album => (
                         <div className="m-[auto] mt-4 mb-4 w-[25%] flex flex-col justify-between items-center text-white" key={album.id}>
                             <img className="w-[100%] h-[90%] rounded-md" src={textToImageConvert(album.cover)} alt={album.cover}/>
@@ -287,14 +330,17 @@ function HallOfFame() {
                         </div>
                         )) 
                     }
-                    {userAlbums[0] == undefined && <h1 className="m-[auto] text-4xl">You don't have favorites albums yet</h1>}
+                    {userAlbums[0] == undefined && <h1 className="m-[auto] text-[#01528f] text-4xl">Избранные альбомы отсутствуют</h1>}
                 </div>
          
            
-                <div className="m-[auto] w-[auto] mt-8 mb-8 flex gap-4">
-                    <Label>Check performer albums</Label>
-                    <Button onClick={handleFindAllAlbums} className="w-[25%]">Check</Button>
-                    {isAlbumsListVisible && <Button onClick={handleCloseAlbumsList} className="w-[25%]">Close</Button>}
+                <div className="m-[auto] mt-40 w-[auto] mt-8 mb-8 flex gap-4">
+                    <div className="flex flex-col justify-between items-center">
+                        <p className="mt-4 mb-4 text-[#FC74FD] text-xl">Проверьте альбомы исполнителя</p>
+                        {!isAlbumsListVisible &&<Button variant={'blue_deep'} onClick={handleFindAllAlbums} className="mt-4 w-[300px] h-[50px] text-xl">Проверить</Button>}
+                        {isAlbumsListVisible && <Button variant={'blue_deep'} onClick={handleCloseAlbumsList} className="mt-4 w-[300px] h-[50px] text-xl">Закрыть</Button>}
+                    </div>                
+                    
                 </div>
                 
                 {
@@ -303,32 +349,48 @@ function HallOfFame() {
                     {foundAlbums !== undefined && foundAlbums.map(album => (
                         <div key={album.id} className="m-[auto] mt-4 mb-4 w-[25%] flex flex-col justify-between items-center text-white">
                             <img src={textToImageConvert(album.cover)} alt="album's info"/>
-                            <p>{album.title}</p>
-                            <p>{album.year}</p>
-                            <Button value={album.id} onClick={handleAddFavoriteAlbum}>Add to favorites</Button>
+                            <p className="mt-4">Название: {album.title}</p>
+                            <p className="mt-4">Год: {album.year}</p>
+                            <Button variant={'blue_deep'} className="mt-4" value={album.id} onClick={handleAddFavoriteAlbum}>Add to favorites</Button>
                         </div>
                     ))
                     }
                     {foundAlbums[0] == undefined && <p>Nothing can found</p>}
                 </div>
                 }
-                  
-                <h3>Cannot find your favorite album? Add it by yourself!</h3>
 
-                <Button onClick={handleVisibleAlbumForm}>Add new album</Button>
-
+                <div className="m-[auto] flex flex-col justify-between items-center">
+                    <p className="mt-4 mb-4 text-[#FC74FD] text-xl">Не нашли нужный альбом? Добавьте его!</p>
+                    <Button variant={'blue_deep'} className="mt-4 w-[300px] h-[50px] text-xl" onClick={handleVisibleAlbumForm}>Добавить новый альбом</Button>
+                </div>
                 {
                 isAddAlbumFormVisible && 
-                    <form onSubmit={handleAlbumSubmit} className="flex flex-col" encType="multipart/form-data">
-                    <label>Add album title</label>
-                    <input type="text" name="title" id="title" onChange={handleAlbumInfo}/>
-                    <label>Add year</label>
-                    <input type="number" name="year" id="year" onChange={handleAlbumInfo}/>
-                    <input type="file" name="file" id="file" onChange={handleAlbumCoverFile}/>
-                    <button type="submit">Add album</button>
-                </form>
-                }
-            </div>                      
+                    <form onSubmit={handleAlbumSubmit} className="absolute w-[20%] bottom-[60%] left-[40%] bg-[#01528f] text-[black] rounded-md" encType="multipart/form-data">
+                        <div className="m-[auto] relative mt-4 mb-4 flex flex-col justify-between items-center gap-6">
+                            <div className="grid gap-2">
+                                <label>Введите название альбома</label>
+                                <Input className="border-[black]" type="text" name="title" id="title" onChange={handleAlbumInfo} required/>
+                            </div>
+                            <div className="grid gap-2">
+                                <label>Введите год</label>
+                                <Input className="border-[black]" type="number" name="year" id="year" onChange={handleAlbumInfo} required/>
+                            </div>
+
+                            <div className="grid gap-2">
+                                <label htmlFor="">Добавьте обложку</label>
+                                <Input className="border-[black]" type="file" name="file" id="file" onChange={handleAlbumCoverFile} required/>
+                            </div>
+                            <div className="mt-4 mb-4 w-[60%] grid gap-2">
+                                <Button variant={'acid_cyan'} type="submit" className="">
+                                    Добавить альбом
+                                </Button>
+                            </div>                          
+                        </div>
+                        <button onClick={() => {setIsAddAlbumFormVisible(false)}} className="absolute top-2 right-3 cursor-pointer text-[black]">X</button> 
+                    </form>
+                    }
+                </div> 
+            </div>                             
         </div>
     );
 }

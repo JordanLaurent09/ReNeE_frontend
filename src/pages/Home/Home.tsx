@@ -34,43 +34,28 @@ function Home() {
                     </MainDeviseRegisterContainer>                
                 <Offer/>
                 {/* Это будет отдельный компонент */}
-                <div className="w-[100%] flex items-center justify-between">
-                    <p className="relative w-[25%] text-white text-center text-4xl">Создайте свой собственный ЗАЛ СЛАВЫ с любимыми исполнителями</p>
+                <div className="m-[auto] w-[100%] pr-2 flex items-center justify-between">
+                    <p className="relative w-[15%] text-white text-center text-3xl">Создайте свой собственный ЗАЛ СЛАВЫ с любимыми исполнителями</p>
                     <GalleryHomeContainer gallery={singers}/>   
                 </div>
-                <div className="mt-20 w-[100%] flex items-center justify-between">
+                <div className="m-[auto] mt-20 pl-2 w-[100%] flex items-center justify-between">
                     <Picture image="Scandal.jpg"/>
                     <Picture image="Singer.jpg"/>
-                    <p className="relative w-[25%] text-white text-center text-4xl">Добавляйте скандальные фото!))</p>                       
+                    <p className="relative w-[25%] text-white text-center text-3xl">Добавляйте скандальные фото!))</p>                       
                 </div>
 
-                <div className="m-[auto] w-[100%] h-[100%] mt-20 flex items-center justify-evenly">
-                    <p className="relative w-[25%] text-white text-center text-4xl">Храните свои любимые музыкальные альбомы</p> 
+                <div className="m-[auto] w-[100%] h-[100%] mt-20 pr-2 flex items-center justify-between">
+                    <p className="relative w-[25%] text-white text-center text-3xl">Храните свои любимые музыкальные альбомы</p> 
                     <Picture image="NeonPlayer1.jpg"/>                           
+                    <Picture image="NeonPlayer3.jpg"/>                           
                 </div>               
 
             </div>
             <div className="relative m-auto p-[2rem] w-[70%] text-black z-1 ">
                 <div className="absolute left-[1.5px] w-[100%] h-[100%] bg-black opacity-80 z-0"></div>
                 <Footer/>
-            </div>
-            
-             
-        </FullPageBackground>
-        
-        
-        // <div className="flex flex-col justify-center">
-        //     <div className="flex justify-center">
-        //         <h1 className="text-9xl">R</h1>
-        //         <h1 className="text-9xl">E</h1>
-        //         <h1 className="text-9xl">N</h1>
-        //         <h1 className="text-9xl">E</h1>
-        //         <h1 className="text-9xl">E</h1>
-        //     </div>            
-        //     <img src="Renee2.jpg" alt="" />
-        // </div>
-        
+            </div>            
+        </FullPageBackground>       
     )
 }
-
 export default Home;

@@ -216,7 +216,7 @@ function Profile() {
             </div>         
             <div className="absolute top-[4%] right-[-3.5%] w-[40%] flex gap-4">
                 <div className="w-[60%] flex gap-4">
-                    <Input className="w-[60%] text-white"
+                    <Input className="w-[60%] text-white border-[#FC74FD]"
                         id="name"
                         type="name"
                         name="name"
@@ -226,52 +226,75 @@ function Profile() {
                         />
                         <div className={`absolute top-12 left-[1.5%] w-[35%] ${display} items-center justify-between text-white text-sm`}>
                             {seekPerformer?.name !== undefined && 
-                            <div className="w-[70%] flex justify-between items-center">
+                            <div className="w-[100%] flex flex-col justify-between">
                                 <Label className="w-[70%]">{seekPerformer?.name}</Label>
-                                <Button onClick={handleAddToFavorites} className="w-[20%]">Add</Button>
-                                
+                                <div className="mt-2 w-[100%] flex justify-between">
+                                    <p onClick={handleAddToFavorites} className="w-[40%] cursor-pointer">Добавить</p>
+                                    <p onClick={() => {
+                                            setDisplay('hidden');
+                                            setFindPerformerData({name: ''});
+                                        }} 
+                                    className="mr-1 w-[40%] cursor-pointer">Закрыть</p>
+                                </div>                               
                             </div>}                   
-                            {seekPerformer?.name === undefined && <p>Nothing found</p>}
-                            <Button onClick={() => {setDisplay('hidden')}} className="mr-1 w-[20%]">Close</Button>
+                            {seekPerformer?.name === undefined && 
+                                <div className="mt-2 w-[100%] flex justify-between">
+                                    <p>Не найдено</p>
+                                    <p onClick={() => {
+                                        setDisplay('hidden');
+                                        setFindPerformerData({name: ''});
+                                        }} 
+                                    className="mr-1 w-[40%] cursor-pointer">Закрыть</p>
+                                </div>
+                                
+                            }                            
                         </div>
-                    <Button onClick={handleClick} className="w-[30%]">Поиск</Button>
+                    <Button onClick={handleClick} className="w-[30%] text-[#FC74FD]">Поиск</Button>
                 </div>               
                 <AccountForm openUpdateData={openUpdateData} openCreatePerformer={openCreatePerformer} logOut={logOut}/>
             </div>
 
             
-            <form onSubmit={handleSubmit} className={`absolute w-[20%] top-[30%] left-[40%] bg-[black] ${createPerformerFormState} rounded-md text-orange-500 z-1`} encType="multipart/form-data">
-                <div className="flex flex-col items-center gap-6">
+            <form onSubmit={handleSubmit} className={`absolute w-[20%] top-[25%] left-[40%] bg-[#301d33] ${createPerformerFormState} rounded-md text-[#FC74FD] z-1`} encType="multipart/form-data">
+                <div className="m-[auto] relative mt-4 mb-4 flex flex-col justify-between items-center gap-6">
                     <div className="grid gap-2">
-                        <label htmlFor="">Enter performer name</label>
-                        <Input className="" type="text" name="name" id="name" value={formData.name} onChange={handlePerformerInfo}/>        
+                        <label htmlFor="">Введите имя исполнителя</label>
+                        <Input className="border-[#FC74FD]" type="text" name="name" id="name" value={formData.name} onChange={handlePerformerInfo}/>        
                     </div>
                     <div className="grid gap-2">
-                        <label htmlFor="">Choose genre</label>
+                        <label htmlFor="">Укажите жанр</label>
                         <GenreSelector handleSelect={handleGenreSelect}/>         
                     </div>
                     <div className="grid gap-2">
-                        <label htmlFor="">Choose country</label>
+                        <label htmlFor="">Выберите страну</label>
                         <CountrySelector handleSelect={handleCountrySelect}/>        
                     </div>         
                     <div className="grid gap-2"> 
-                        <label htmlFor="">Add file</label>
-                        <Input className="" type="file" name="file" id="file" onChange={handleFile}/>
+                        <label htmlFor="">Добавьте фото</label>
+                        <Input className="border-[#FC74FD]" type="file" name="file" id="file" onChange={handleFile}/>
                     </div>
                     <div className="mt-4 mb-4 w-[60%] grid gap-2">
-                        <Button type="submit" className="">
-                            Create performer
+                        <Button variant={'barbie_pink'} type="submit" className="">
+                            Создать исполнителя
                         </Button>
-                    </div>                    
-                </div>                   
+                    </div>
+                                        
+                </div>
+                <button onClick={() => setCreatePerformerFormState('hidden')} className="absolute top-2 right-3 cursor-pointer text-[#f233f3]">X</button>                   
             </form>            
             
-            {performersData[0] == undefined && <h1 className="m-[auto] w-[80%] text-8xl text-white">У Вас пока нет любимых исполнителей</h1>} 
+            {performersData[0] == undefined && 
+            <div className="m-[auto] flex flex-col items-center">
+                <h1 className="m-[auto] w-[80%] text-center text-8xl text-[#FC74FD]">У Вас пока нет любимых исполнителей</h1>
+                <p className="mt-4 mb-4 text-[white] text-xl">Не нашли в поиске?</p>
+                <Button onClick={openCreatePerformer} className="h-[50px] text-[#FC74FD] text-xl">Добавить</Button>
+            </div>
+            } 
             <div className="m-[auto] mt-20 w-[80%] flex flex-wrap gap-2 overflow-y-scroll rounded-md bg-fuchsia-400 brightness-80">
                 {performersData != undefined && performersData.map(performersData => (
                     <div className="relative m-[auto] mt-4 mb-4 w-[25%] flex flex-col justify-between items-center text-white" key={performersData.id}>
                         <img className="w-[100%] h-[90%] rounded-md" src={textToImageConvert(performersData.image)} alt={performersData.image}/>
-                        <Button value={performersData.id} onClick={handleRemovePerformer} className="absolute right-0">X</Button>
+                        <Button value={performersData.id} onClick={handleRemovePerformer} className="absolute right-0 w-[20px] h-[30px] cursor-pointer rounded-[60%] text-[#f233f3]">X</Button>
                         <div className="m-[auto] mt-4 mb-4 w-[100%] flex flex justify-between items-center">
                             <p>{performersData.name}</p>                       
                             <img className="w-[10%]" src={performersData.country} alt="" />                           
