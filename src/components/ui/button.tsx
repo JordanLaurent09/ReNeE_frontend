@@ -23,8 +23,9 @@ const buttonVariants = cva(
 
         acid_green: "bg-[#48fb2c]",
         acid_cyan: "bg-[#0adada]",
-
-        toxic_pink: "bg-[#3d3c7a]"
+        toxic_pink: "bg-[#3d3c7a]",
+        jamaica_blue: "bg-[#299bb3]",
+        barbie_pink: "bg-[#f698c5] text-[#01528f]"
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
