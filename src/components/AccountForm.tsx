@@ -17,20 +17,20 @@ export function AccountForm(props: AccountFormProps) {
         <AccountContainer>
             <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">Меню</Button>
+        <Button variant='barbie_pink'>Меню</Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end">
+      <DropdownMenuContent className="w-56 bg-[#301d33] text-[#FC74FD] border-[#FC74FD]" align="end">
         <DropdownMenuLabel>Профиль</DropdownMenuLabel>
         <DropdownMenuGroup>
           <DropdownMenuItem onClick={props.openUpdateData}>
             Личные данные
           </DropdownMenuItem>         
         </DropdownMenuGroup>
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="bg-[#FC74FD]"/>
         <DropdownMenuGroup>
           <DropdownMenuItem onClick={props.openCreatePerformer}>Создать нового исполнителя</DropdownMenuItem>         
         </DropdownMenuGroup>
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="bg-[#FC74FD]"/>
                
         <DropdownMenuItem onClick={props.logOut}>
           Выйти        

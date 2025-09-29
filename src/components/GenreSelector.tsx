@@ -4,12 +4,12 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 export function GenreSelector(props: SelectorProps): React.JSX.Element {
     return (
     <Select onValueChange={props.handleSelect} required>
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Select a genre"/>
+      <SelectTrigger className="w-[180px] border-[#FC74FD]">
+        <SelectValue placeholder="Выберите жанр"/>
       </SelectTrigger>
       <SelectContent>
-        <SelectGroup>
-          <SelectLabel>Genre</SelectLabel>
+        <SelectGroup className="bg-[#301d33] text-[#FC74FD]">
+          <SelectLabel className="text-[#FC74FD]">Genre</SelectLabel>
           <SelectItem value="Pop">Pop</SelectItem>
           <SelectItem value="Rock">Rock</SelectItem>    
           <SelectItem value="OST">OST</SelectItem>    

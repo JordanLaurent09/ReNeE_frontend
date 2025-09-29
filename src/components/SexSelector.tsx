@@ -13,7 +13,7 @@ import type { JSX } from "react"
 export function SexSelector(props: SexSelectorProps): JSX.Element {
   return (
     <Select onValueChange={props.handleSelect} required>
-      <SelectTrigger className="w-[180px] border-[#f698c5]">
+      <SelectTrigger className="w-[335px] border-[#f698c5]">
         <SelectValue placeholder="Выберите пол"/>
       </SelectTrigger>
       <SelectContent className="bg-[#01528f]">

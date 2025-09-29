@@ -13,7 +13,7 @@ function Header() {
     }
         
     return (
-        <div className="m-[auto] pt-8 w-[70%] sticky top-0 flex justify-between brightness-200 z-2">
+        <div className="m-[auto] pt-8 w-[66.5%] sticky top-0 flex justify-between brightness-200 z-2">
             <div>
                 <img className="w-[150px]" src="ReneeLogo.png" alt="site logo"/>
             </div>          

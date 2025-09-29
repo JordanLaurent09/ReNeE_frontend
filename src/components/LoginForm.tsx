@@ -57,7 +57,7 @@ export function LoginForm(props: LoginFormProps): JSX.Element {
     <LoginContainer className="m-auto w-full max-w-sm">
         <Card className="w-full max-w-sm bg-[#5a346f] border-none">
       <CardHeader>
-        <CardTitle className="text-left text-[#92e1df]">Зайти в аккуант</CardTitle>
+        <CardTitle className="text-left text-[#92e1df]">Зайти в аккаунт</CardTitle>
         <CardDescription className="text-left text-[#299bb3]">
           Введите свои данные для входа в аккаунт
         </CardDescription>

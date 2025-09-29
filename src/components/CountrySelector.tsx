@@ -4,12 +4,12 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 export function CountrySelector(props: SelectorProps): React.JSX.Element {
     return (
     <Select onValueChange={props.handleSelect} required>
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Select a country"/>
+      <SelectTrigger className="w-[180px] border-[#FC74FD]">
+        <SelectValue placeholder="Выберите страну"/>
       </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          <SelectLabel>Country</SelectLabel>
+      <SelectContent className="bg-[#301d33]">
+        <SelectGroup className="bg-[#301d33] text-[#FC74FD]">
+          <SelectLabel className="text-[#FC74FD]">Страна</SelectLabel>
           <SelectItem value="/Russia.png"><img className="w-[30px]" src="/Russia.png" alt="Russia"/>Russia</SelectItem>
           <SelectItem value="/Germany.png"><img className="w-[30px]" src="/Germany.png" alt="Germany"/>Germany</SelectItem>    
           <SelectItem value="/England.png"><img className="w-[30px]" src="/England.png" alt="England"/>England</SelectItem>    
